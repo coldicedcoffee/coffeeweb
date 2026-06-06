@@ -144,11 +144,11 @@ export function Blog() {
           </div>
 
           {selectedPost.imageUrl && (
-            <div className="mb-12 rounded-2xl overflow-hidden">
+            <div className="mb-12 rounded-2xl overflow-hidden aspect-video relative bg-muted">
               <img
                 src={selectedPost.imageUrl}
                 alt={selectedPost.title}
-                className="w-full h-auto"
+                className="w-full h-full object-cover absolute inset-0"
               />
             </div>
           )}

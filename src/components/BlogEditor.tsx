@@ -284,6 +284,21 @@ export function BlogEditor() {
               className="w-full px-4 py-3 border border-input bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground transition-all text-foreground"
               placeholder="https://example.com/image.jpg"
             />
+            {formData.imageUrl && (
+              <div className="mt-3">
+                <p className="text-sm text-muted-foreground mb-2">Preview (16:9 aspect ratio):</p>
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-muted border border-border">
+                  <img
+                    src={formData.imageUrl}
+                    alt="Featured preview"
+                    className="w-full h-full object-cover absolute inset-0"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Content Blocks */}

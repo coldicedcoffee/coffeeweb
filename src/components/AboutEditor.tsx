@@ -115,7 +115,7 @@ export function AboutEditor() {
                 <img
                   src={formData.profileImage}
                   alt="Profile preview"
-                  className="w-32 h-32 rounded-xl object-cover border-2 border-border"
+                  className="w-48 h-48 rounded-xl object-cover border-2 border-border"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}

@@ -185,6 +185,21 @@ export function PortfolioEditor() {
               placeholder="https://example.com/image.jpg"
               required
             />
+            {formData.imageUrl && (
+              <div className="mt-3">
+                <p className="text-sm text-muted-foreground mb-2">Preview (16:10 aspect ratio):</p>
+                <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-muted border border-border">
+                  <img
+                    src={formData.imageUrl}
+                    alt="Project preview"
+                    className="w-full h-full object-cover absolute inset-0"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
