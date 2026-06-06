@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Calendar, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Calendar, ArrowRight, Clock } from 'lucide-react';
 
 export interface BlogPost {
   id: string;
@@ -19,10 +19,6 @@ export interface BlogPost {
   }>;
 }
 
-interface BlogProps {
-  isEditorMode: boolean;
-}
-
 // Convert markdown-style links [text](url) to HTML links
 function convertMarkdownLinks(text: string): string {
   return text
@@ -38,7 +34,35 @@ function convertMarkdownLinks(text: string): string {
     .join('<br/>');
 }
 
-export function Blog({ isEditorMode }: BlogProps) {
+// Format date to human-readable
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+// Estimate reading time
+function getReadingTime(post: BlogPost): string {
+  let text = post.content || '';
+  if (post.contentBlocks) {
+    text = post.contentBlocks
+      .filter(b => b.type === 'text')
+      .map(b => b.content)
+      .join(' ');
+  }
+  const words = text.split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  return `${minutes} min read`;
+}
+
+export function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
@@ -98,20 +122,27 @@ export function Blog({ isEditorMode }: BlogProps) {
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to insights
           </button>
-          
+
           {selectedPost.category && (
             <span className="inline-block px-3 py-1.5 bg-secondary/80 text-muted-foreground rounded-full mb-6 text-[13px]">
               {selectedPost.category}
             </span>
           )}
-          
+
           <h1 className="text-foreground mb-6 max-w-3xl text-[2.75rem] leading-[1.15]">{selectedPost.title}</h1>
-          
-          <div className="flex items-center gap-2 text-muted-foreground mb-12 text-[14px]">
-            <Calendar className="w-4 h-4" />
-            <time>{selectedPost.date}</time>
+
+          <div className="flex items-center gap-4 text-muted-foreground mb-12 text-[14px]">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              <time>{formatDate(selectedPost.date)}</time>
+            </div>
+            <span className="text-border">·</span>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              <span>{getReadingTime(selectedPost)}</span>
+            </div>
           </div>
-          
+
           {selectedPost.imageUrl && (
             <div className="mb-12 rounded-2xl overflow-hidden">
               <img
@@ -121,21 +152,21 @@ export function Blog({ isEditorMode }: BlogProps) {
               />
             </div>
           )}
-          
+
           <div className="prose prose-lg dark:prose-invert max-w-none">
             {selectedPost.contentBlocks && selectedPost.contentBlocks.length > 0 ? (
               <div className="space-y-6">
                 {selectedPost.contentBlocks.map((block, index) => (
                   <div key={index}>
                     {block.type === 'text' ? (
-                      <div 
+                      <div
                         className="text-foreground/80 leading-relaxed text-[17px]"
-                        dangerouslySetInnerHTML={{ 
-                          __html: convertMarkdownLinks(block.content) 
+                        dangerouslySetInnerHTML={{
+                          __html: convertMarkdownLinks(block.content)
                         }}
                       />
                     ) : (
-                      <div 
+                      <div
                         className={`rounded-2xl overflow-hidden my-8 flex ${
                           block.imageAlign === 'left' ? 'justify-start' :
                           block.imageAlign === 'right' ? 'justify-end' :
@@ -146,7 +177,7 @@ export function Blog({ isEditorMode }: BlogProps) {
                           src={block.content}
                           alt={`Content image ${index + 1}`}
                           className="h-auto"
-                          style={{ 
+                          style={{
                             width: block.imageWidth || '100%',
                             maxWidth: '100%'
                           }}
@@ -162,7 +193,7 @@ export function Blog({ isEditorMode }: BlogProps) {
               </div>
             )}
           </div>
-          
+
           {selectedPost.links && selectedPost.links.length > 0 && (
             <div className="mt-12 pt-8 border-t border-border">
               <h3 className="text-foreground mb-4">Related Links</h3>
@@ -188,7 +219,7 @@ export function Blog({ isEditorMode }: BlogProps) {
           <div className="mb-12 max-w-3xl">
             <h2 className="text-foreground mb-3 text-[2.25rem] leading-tight">Insights & Analysis</h2>
             <p className="text-muted-foreground text-[16px] leading-relaxed">
-              Perspectives on private equity, strategic consulting, and value creation—informed by 
+              Perspectives on private equity, strategic consulting, and value creation—informed by
               experience across deal execution, operational transformation, and market analysis.
             </p>
           </div>
@@ -196,7 +227,7 @@ export function Blog({ isEditorMode }: BlogProps) {
           {posts.length === 0 ? (
             <div className="text-center py-20 border border-border rounded-2xl">
               <p className="text-muted-foreground">
-                No insights published yet. {isEditorMode && 'Enter editor mode to create your first post.'}
+                No insights published yet.
               </p>
             </div>
           ) : (
@@ -219,17 +250,24 @@ export function Blog({ isEditorMode }: BlogProps) {
                           </span>
                         )}
                       </div>
-                      <time className="text-muted-foreground text-[14px] whitespace-nowrap mt-1">{post.date}</time>
+                      <div className="flex items-center gap-3 text-muted-foreground text-[14px] whitespace-nowrap mt-1">
+                        <time>{formatDate(post.date)}</time>
+                        <span className="text-border">·</span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {getReadingTime(post)}
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="text-foreground group-hover:text-muted-foreground transition-colors text-[1.75rem] leading-tight">
+                    <h3 className="text-foreground group-hover:opacity-70 transition-opacity text-[1.75rem] leading-tight">
                       {post.title}
                     </h3>
                   </div>
-                  
+
                   <p className="text-muted-foreground leading-relaxed mb-6 text-[15px]">
                     {post.excerpt}
                   </p>
-                  
+
                   <div className="flex items-center gap-2 text-foreground group-hover:gap-3 transition-all text-[15px]">
                     Read more
                     <ArrowRight className="w-4 h-4" />

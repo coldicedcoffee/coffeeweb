@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AboutData } from './About';
 import { Save, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function AboutEditor() {
   const [formData, setFormData] = useState<AboutData>({
@@ -32,7 +33,7 @@ export function AboutEditor() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem('aboutData', JSON.stringify(formData));
-    alert('About information updated successfully!');
+    toast.success('About information updated successfully!');
   };
 
   const addExperience = () => {
@@ -393,7 +394,7 @@ export function AboutEditor() {
               type="text"
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill(); } }}
               placeholder="Add a skill"
               className="flex-1 px-4 py-3 border border-input bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground transition-all text-foreground"
             />

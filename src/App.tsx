@@ -2,15 +2,34 @@ import { useState, useEffect } from 'react';
 import { Blog } from './components/Blog';
 import { Portfolio } from './components/Portfolio';
 import { About } from './components/About';
-import { EditorMode } from './components/EditorMode';
+import { AdminLogin } from './components/AdminLogin';
+import { AdminPanel } from './components/AdminPanel';
 import { motion, AnimatePresence } from 'motion/react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
+import { Moon, Sun, Menu, X, Github, Linkedin, Mail } from 'lucide-react';
+
+type AppView = 'site' | 'admin-login' | 'admin';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'blog' | 'portfolio' | 'about'>('blog');
-  const [isEditorMode, setIsEditorMode] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [view, setView] = useState<AppView>('site');
+
+  // Hash-based routing for admin
+  useEffect(() => {
+    const handleHash = () => {
+      if (window.location.hash === '#admin') {
+        const isAuth = sessionStorage.getItem('adminAuth') === 'true';
+        setView(isAuth ? 'admin' : 'admin-login');
+      } else {
+        setView('site');
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('darkMode');
@@ -32,7 +51,7 @@ export default function App() {
     const newDarkMode = !isDark;
     setIsDark(newDarkMode);
     localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
-    
+
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
@@ -40,8 +59,50 @@ export default function App() {
     }
   };
 
+  // Load about data for footer social links
+  const [aboutData, setAboutData] = useState<{
+    email?: string;
+    social?: { github?: string; linkedin?: string };
+  }>({});
+
+  useEffect(() => {
+    const saved = localStorage.getItem('aboutData');
+    if (saved) {
+      try {
+        setAboutData(JSON.parse(saved));
+      } catch {
+        // ignore parse errors
+      }
+    }
+  }, []);
+
+  // Admin views
+  if (view === 'admin-login') {
+    return (
+      <AdminLogin
+        onLogin={() => setView('admin')}
+        onBack={() => {
+          window.location.hash = '';
+          setView('site');
+        }}
+      />
+    );
+  }
+
+  if (view === 'admin') {
+    return (
+      <AdminPanel
+        onLogout={() => {
+          window.location.hash = '';
+          setView('site');
+        }}
+      />
+    );
+  }
+
+  // Main site view
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-background transition-colors duration-300 flex flex-col">
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +111,7 @@ export default function App() {
               <h1 className="text-foreground mb-1">Param Pabari</h1>
               <p className="text-muted-foreground text-[15px]">Strategy · Analysis · Value Creation</p>
             </div>
-            
+
             <div className="flex items-center gap-3">
               {/* Dark Mode Toggle */}
               <button
@@ -172,40 +233,75 @@ export default function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {activeTab === 'blog' && <Blog isEditorMode={isEditorMode} />}
-          {activeTab === 'portfolio' && <Portfolio isEditorMode={isEditorMode} />}
-          {activeTab === 'about' && <About isEditorMode={isEditorMode} />}
-        </motion.div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex-1 w-full">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {activeTab === 'blog' && <Blog />}
+            {activeTab === 'portfolio' && <Portfolio />}
+            {activeTab === 'about' && <About />}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
-      {/* Editor Mode Toggle */}
-      <button
-        onClick={() => setIsEditorMode(!isEditorMode)}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-foreground text-background rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center group"
-        title={isEditorMode ? 'Exit Editor Mode' : 'Enter Editor Mode'}
-      >
-        {isEditorMode ? (
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
-        )}
-      </button>
+      {/* Footer */}
+      <footer className="border-t border-border/50 bg-background/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <p className="text-muted-foreground text-[14px]">
+                © {new Date().getFullYear()} Param Pabari
+              </p>
+              <span className="text-border hidden sm:inline">·</span>
+              <div className="hidden sm:flex items-center gap-3">
+                {aboutData?.email && (
+                  <a
+                    href={`mailto:${aboutData.email}`}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Email"
+                  >
+                    <Mail className="w-4 h-4" />
+                  </a>
+                )}
+                {aboutData?.social?.linkedin && (
+                  <a
+                    href={aboutData.social.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                )}
+                {aboutData?.social?.github && (
+                  <a
+                    href={aboutData.social.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="GitHub"
+                  >
+                    <Github className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+            </div>
 
-      {/* Editor Mode Modal */}
-      {isEditorMode && (
-        <EditorMode onClose={() => setIsEditorMode(false)} />
-      )}
+            <a
+              href="#admin"
+              className="text-muted-foreground/50 hover:text-muted-foreground text-[12px] transition-colors"
+            >
+              Admin
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

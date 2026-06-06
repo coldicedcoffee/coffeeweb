@@ -27,11 +27,7 @@ export interface AboutData {
   skills?: string[];
 }
 
-interface AboutProps {
-  isEditorMode: boolean;
-}
-
-export function About({ isEditorMode }: AboutProps) {
+export function About() {
   const [data, setData] = useState<AboutData>({
     name: 'Your Name',
     title: 'Consultant | PM | Aspiring PE Analyst',

@@ -2046,3 +2046,349 @@ html {
   inherits: false;
   initial-value: 1;
 }
+
+/* ===================================
+   Smooth scrolling
+   =================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===================================
+   Admin Login Page
+   =================================== */
+.admin-login-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(59, 130, 246, 0.06), transparent);
+}
+
+.admin-login-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 2.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.admin-login-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-login-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.-translate-y-1\/2 {
+  transform: translateY(-50%);
+}
+
+.self-start {
+  align-self: flex-start;
+}
+
+/* ===================================
+   Admin Panel Layout
+   =================================== */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.admin-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--card);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 50;
+  transition: width 0.2s ease, transform 0.2s ease;
+}
+
+.admin-sidebar-collapsed {
+  width: 72px;
+}
+
+.admin-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+  gap: 0.5rem;
+}
+
+.admin-sidebar-logo {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  background: linear-gradient(135deg, var(--foreground), var(--muted-foreground));
+  color: var(--background);
+  flex-shrink: 0;
+}
+
+.admin-sidebar-nav {
+  flex: 1;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+
+.admin-sidebar-footer {
+  padding: 0.75rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.625rem;
+  color: var(--muted-foreground);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+}
+
+.admin-nav-item:hover {
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.admin-nav-item-active {
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.admin-nav-item-danger:hover {
+  color: var(--destructive);
+  background-color: color-mix(in oklab, var(--destructive) 8%, transparent);
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.2s ease;
+}
+
+.admin-sidebar-collapsed + .admin-main {
+  margin-left: 72px;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  backdrop-filter: blur(8px);
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.admin-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 45;
+}
+
+/* ===================================
+   Admin Dashboard
+   =================================== */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.admin-stat-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.admin-stat-card:hover {
+  border-color: var(--muted-foreground);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin-stat-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  flex-shrink: 0;
+}
+
+.admin-stat-icon-blue {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.admin-stat-icon-emerald {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.admin-stat-icon-violet {
+  background-color: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+}
+
+.admin-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.admin-quick-action:hover {
+  border-color: var(--muted-foreground);
+  background-color: var(--secondary);
+}
+
+/* ===================================
+   Admin Settings
+   =================================== */
+.admin-settings-section {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.admin-settings-danger {
+  border-color: color-mix(in oklab, var(--destructive) 30%, transparent);
+}
+
+/* ===================================
+   Additional utilities for admin
+   =================================== */
+.font-medium {
+  font-weight: 500;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* hover:opacity-70 */
+@media (hover: hover) {
+  .group-hover\:opacity-70:is(:where(.group):hover *) {
+    opacity: 0.7;
+  }
+}
+
+/* ===================================
+   Admin Mobile Responsive
+   =================================== */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    width: 260px;
+  }
+
+  .admin-sidebar-mobile-open {
+    transform: translateX(0);
+  }
+
+  .admin-sidebar-collapsed {
+    width: 260px;
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar-collapsed.admin-sidebar-mobile-open {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0 !important;
+  }
+
+  .admin-topbar {
+    padding: 1rem;
+  }
+
+  .admin-content {
+    padding: 1rem;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fix for w-3.5 and h-3.5 used in Blog reading time */
+.w-3\.5 {
+  width: calc(var(--spacing) * 3.5);
+}
+.h-3\.5 {
+  height: calc(var(--spacing) * 3.5);
+}
+
+/* Fix for opacity-70 hover used in about section */
+.opacity-70 {
+  opacity: 0.7;
+}

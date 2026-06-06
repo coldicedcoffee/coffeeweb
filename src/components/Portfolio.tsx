@@ -14,11 +14,7 @@ export interface PortfolioItem {
   buttonText?: string;
 }
 
-interface PortfolioProps {
-  isEditorMode: boolean;
-}
-
-export function Portfolio({ isEditorMode }: PortfolioProps) {
+export function Portfolio() {
   const [items, setItems] = useState<PortfolioItem[]>([]);
 
   useEffect(() => {
@@ -75,7 +71,7 @@ export function Portfolio({ isEditorMode }: PortfolioProps) {
       <div className="mb-12 max-w-3xl">
         <h2 className="text-foreground mb-3 text-[2.25rem] leading-tight">Selected Work</h2>
         <p className="text-muted-foreground text-[16px] leading-relaxed">
-          A collection of strategic engagements and value creation initiatives across 
+          A collection of strategic engagements and value creation initiatives across
           private equity investments, consulting projects, and operational transformations.
         </p>
       </div>
@@ -83,7 +79,7 @@ export function Portfolio({ isEditorMode }: PortfolioProps) {
       {items.length === 0 ? (
         <div className="text-center py-20 border border-border rounded-2xl">
           <p className="text-muted-foreground">
-            No work samples yet. {isEditorMode && 'Enter editor mode to add your first project.'}
+            No work samples yet.
           </p>
         </div>
       ) : (
@@ -94,7 +90,7 @@ export function Portfolio({ isEditorMode }: PortfolioProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="group"
+              className="group flex flex-col"
             >
               <div className="relative aspect-[16/10] bg-muted rounded-2xl overflow-hidden mb-6">
                 <img
@@ -104,23 +100,23 @@ export function Portfolio({ isEditorMode }: PortfolioProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-              
-              <div className="space-y-4">
+
+              <div className="space-y-4 flex-1 flex flex-col">
                 {item.type && (
-                  <span className="inline-block px-3 py-1.5 bg-secondary/60 text-muted-foreground rounded-full text-[13px]">
+                  <span className="inline-block px-3 py-1.5 bg-secondary/60 text-muted-foreground rounded-full text-[13px] self-start">
                     {item.type}
                   </span>
                 )}
-                
-                <div>
-                  <h3 className="text-foreground mb-3 group-hover:text-muted-foreground transition-colors text-[1.5rem] leading-tight">
+
+                <div className="flex-1">
+                  <h3 className="text-foreground mb-3 group-hover:opacity-70 transition-opacity text-[1.5rem] leading-tight">
                     {item.title}
                   </h3>
                   <p className="text-muted-foreground leading-relaxed text-[15px]">
                     {item.description}
                   </p>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {item.tags.map((tag) => (
                     <span
@@ -137,7 +133,7 @@ export function Portfolio({ isEditorMode }: PortfolioProps) {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-xl hover:opacity-90 transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-xl hover:opacity-90 transition-all self-start"
                   >
                     {item.buttonText || 'View Project'}
                     <ExternalLink className="w-4 h-4" />
