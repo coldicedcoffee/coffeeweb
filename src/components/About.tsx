@@ -18,6 +18,7 @@ export interface AboutData {
     company: string;
     role: string;
     period: string;
+    logoUrl?: string;
   }>;
   education?: Array<{
     institution: string;
@@ -138,6 +139,13 @@ export function About() {
               <div className="space-y-6">
                 {data.experience.map((exp, index) => (
                   <div key={index} className="border-l-2 border-border pl-6">
+                    {exp.logoUrl && (
+                      <img
+                        src={exp.logoUrl}
+                        alt={`${exp.company} logo`}
+                        className="w-16 h-16 object-contain mb-4 grayscale hover:grayscale-0 transition-all duration-300"
+                      />
+                    )}
                     <h4 className="text-foreground mb-1 text-[1.0625rem]">{exp.role}</h4>
                     <p className="text-muted-foreground mb-1 text-[15px]">{exp.company}</p>
                     <p className="text-muted-foreground/70 text-[14px]">{exp.period}</p>

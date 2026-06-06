@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AboutData } from './About';
 import { Save, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { sanitizeData } from '../utils/sanitize';
 
 export function AboutEditor() {
   const [formData, setFormData] = useState<AboutData>({
@@ -15,7 +16,7 @@ export function AboutEditor() {
     skills: []
   });
 
-  const [newExperience, setNewExperience] = useState({ company: '', role: '', period: '' });
+  const [newExperience, setNewExperience] = useState({ company: '', role: '', period: '', logoUrl: '' });
   const [newEducation, setNewEducation] = useState({ institution: '', degree: '', period: '' });
   const [newSkill, setNewSkill] = useState('');
 
@@ -32,7 +33,8 @@ export function AboutEditor() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('aboutData', JSON.stringify(formData));
+    const cleanData = sanitizeData(formData);
+    localStorage.setItem('aboutData', JSON.stringify(cleanData));
     toast.success('About information updated successfully!');
   };
 
@@ -42,7 +44,7 @@ export function AboutEditor() {
         ...formData,
         experience: [...(formData.experience || []), newExperience]
       });
-      setNewExperience({ company: '', role: '', period: '' });
+      setNewExperience({ company: '', role: '', period: '', logoUrl: '' });
     }
   };
 
@@ -299,6 +301,13 @@ export function AboutEditor() {
               onChange={(e) => setNewExperience({ ...newExperience, period: e.target.value })}
               placeholder="Period"
               className="px-4 py-3 border border-input bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground transition-all text-foreground"
+            />
+            <input
+              type="url"
+              value={newExperience.logoUrl}
+              onChange={(e) => setNewExperience({ ...newExperience, logoUrl: e.target.value })}
+              placeholder="Company Logo URL (optional)"
+              className="px-4 py-3 border border-input bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground transition-all text-foreground sm:col-span-3"
             />
           </div>
           <button

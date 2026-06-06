@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PortfolioItem } from './Portfolio';
 import { Trash2, Edit3, Plus } from 'lucide-react';
+import { sanitizeData } from '../utils/sanitize';
 
 export function PortfolioEditor() {
   const [items, setItems] = useState<PortfolioItem[]>([]);
@@ -28,8 +29,9 @@ export function PortfolioEditor() {
   };
 
   const saveItems = (updatedItems: PortfolioItem[]) => {
-    localStorage.setItem('portfolioItems', JSON.stringify(updatedItems));
-    setItems(updatedItems);
+    const cleanItems = sanitizeData(updatedItems);
+    localStorage.setItem('portfolioItems', JSON.stringify(cleanItems));
+    setItems(cleanItems);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

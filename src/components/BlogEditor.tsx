@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BlogPost } from './Blog';
 import { Trash2, Edit3, Plus, Image, MoveUp, MoveDown, X as XIcon } from 'lucide-react';
+import { sanitizeData } from '../utils/sanitize';
 
 export function BlogEditor() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -11,7 +12,8 @@ export function BlogEditor() {
     category: '',
     excerpt: '',
     content: '',
-    imageUrl: ''
+    imageUrl: '',
+    pdfUrl: ''
   });
   const [links, setLinks] = useState<Array<{ title: string; url: string }>>([]);
   const [newLink, setNewLink] = useState({ title: '', url: '' });
@@ -38,8 +40,9 @@ export function BlogEditor() {
   };
 
   const savePosts = (updatedPosts: BlogPost[]) => {
-    localStorage.setItem('blogPosts', JSON.stringify(updatedPosts));
-    setPosts(updatedPosts);
+    const cleanPosts = sanitizeData(updatedPosts);
+    localStorage.setItem('blogPosts', JSON.stringify(cleanPosts));
+    setPosts(cleanPosts);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -299,6 +302,20 @@ export function BlogEditor() {
                 </div>
               </div>
             )}
+          </div>
+
+          <div>
+            <label htmlFor="pdfUrl" className="block text-foreground mb-2">
+              PDF Link URL (optional)
+            </label>
+            <input
+              type="url"
+              id="pdfUrl"
+              value={formData.pdfUrl || ''}
+              onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+              className="w-full px-4 py-3 border border-input bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground transition-all text-foreground"
+              placeholder="https://example.com/document.pdf"
+            />
           </div>
 
           {/* Content Blocks */}

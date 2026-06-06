@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Calendar, ArrowRight, Clock } from 'lucide-react';
+import { ArrowLeft, Calendar, ArrowRight, Clock, FileText } from 'lucide-react';
 
 export interface BlogPost {
   id: string;
@@ -10,6 +10,7 @@ export interface BlogPost {
   content: string;
   category?: string;
   imageUrl?: string;
+  pdfUrl?: string;
   links?: Array<{ title: string; url: string }>;
   contentBlocks?: Array<{
     type: 'text' | 'image';
@@ -141,6 +142,20 @@ export function Blog() {
               <Clock className="w-4 h-4" />
               <span>{getReadingTime(selectedPost)}</span>
             </div>
+            {selectedPost.pdfUrl && (
+              <>
+                <span className="text-border">·</span>
+                <a
+                  href={selectedPost.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-foreground hover:text-foreground/70 transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>View PDF</span>
+                </a>
+              </>
+            )}
           </div>
 
           {selectedPost.imageUrl && (
